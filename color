@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>COMBRIDGE&EB お年玉くじ</title>
+  <style>
+   /* htmlとbodyを画面全体に */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  text-align: center;
+  font-family: "Hiragino Maru Gothic Pro", "Comic Sans MS", sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f5f7fa, #d0e8f2); /* 明るく爽やかな青緑系 */
+  padding: 30px;
+}
+
+h2 {
+  color: #d73121; /* 赤（イラストの赤線より少し落ち着いた赤） */
+  font-size: 36px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px #f1c40f; /* 黄色系の影 */
+}
+
+input {
+  width: 200px;
+  padding: 8px;
+  margin: 6px;
+  border-radius: 10px;
+  border: 2px solid #f39c12; /* オレンジ色 */
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #f39c12;
+  background: #fff8e7;
+}
+
+button {
+  background: linear-gradient(to bottom, #2a89d9, #7bc1ff); /* 青系グラデーション */
+  color: #fffde7;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px #dcdcdc;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: linear-gradient(to bottom, #7bc1ff, #2a89d9);
+  transform: scale(1.05);
+}
+
+#resultText {
+  font-size: 32px;
+  color: #d73121; /* 赤 */
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 0;
+  display: none;
+  text-shadow: 1px 1px #f1c40f; /* 黄色系の影 */
+  animation: popOut 0.5s ease-out;  /* アニメーションを追加 */
+}
+
+@keyframes popOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#box {
+  width: 300px;
+  height: 300px;
+  margin: 40px auto 0 auto;
+  position: relative;
+}
+
+.box-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 15px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.shake {
+  animation: shake 2s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(10deg); }
+  20% { transform: rotate(-10deg); }
+  30% { transform: rotate(10deg); }
+  40% { transform: rotate(-10deg); }
+  50% { transform: rotate(5deg); }
+  60% { transform: rotate(-5deg); }
+  70% { transform: rotate(5deg); }
+  80% { transform: rotate(-5deg); }
+  90% { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+  </style>
+</head>
+<body>
+
+  <h2>COMBRIDGE&EB<br>お年玉くじ</h2>
+
+  <input id="name" type="text" placeholder="名前"><br>
+  <input id="email" type="email" placeholder="メールアドレス"><br><br>
+  <button id="drawButton" onclick="draw()">くじを引く</button>
+
+  <p id="resultText"></p>
+
+  <div id="box">
+    <img src="box_icon.png" class="box-icon">
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbz_BM1ltjBTHHuNs6SPKs86XTQiL73MYSYBq0FMt4AnXSEil67C0MJI6GSRDljBMyOj/exec";
+
+    async function draw() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+
+    if (!name || !email) {
+    alert("名前とメールアドレスを入力してください。");
+    return;
+    }
+
+    // 名前・メール・ボタンを非表示
+    document.getElementById("name").style.display = "none";
+    document.getElementById("email").style.display = "none";
+    document.getElementById("drawButton").style.display = "none";
+
+    const resultText = document.getElementById("resultText");
+    resultText.style.display = "none";
+
+    // ▼ 先に API を呼ぶ（待たずにくじ箱を揺らす）
+    const apiPromise = fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ name, email })
+    }).then(res => res.json());
+
+    // ▼ 箱を揺らす
+    const box = document.getElementById("box");
+    box.classList.add("shake");
+
+    // 揺れ終了待ち
+    await new Promise(resolve => {
+    box.addEventListener("animationend", function handler() {
+      box.classList.remove("shake");
+      box.removeEventListener("animationend", handler);
+      resolve();
+    });
+    });
+
+    // ▼ 揺れが終わってから API 結果を受け取る
+    const data = await apiPromise;
+
+    // ▼ 参加済みチェック
+    if (data.status === "already") {
+    resultText.innerHTML = "<span class='result-main'>すでに参加済みです</span>";
+    resultText.style.display = "block";
+    return;
+    }
+
+    // ▼ くじが全部なくなっていた場合
+    if (data.status === "empty") {
+    resultText.innerHTML = "<span class='result-main'>くじがありません</span>";
+    resultText.style.display = "block";
+    return;
+    }
+
+    // ▼ 通常の当選結果
+    resultText.innerHTML =
+    "<span class='result-main'>＼ " + data.result + " ／</span>" +
+    "<br>" +
+    "<span class='result-prize'>" + data.prize + "</span>";
+
+    resultText.style.display = "block";
+    resultText.classList.add("animate"); // アニメーションのクラスを追加
+
+    }
+   
+  </script>
+
+</body>
+</html>
