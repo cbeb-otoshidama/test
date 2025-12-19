@@ -61,7 +61,6 @@
       margin-bottom: 20px;
       margin-top: 0;
       display: none;
-      text-shadow: 1px 1px #ffd700;
       animation: popOut 0.5s ease-out;
     }
 
@@ -237,10 +236,10 @@
   // ▼ 完了メッセージを表示
   document.getElementById("popupComplete").style.display = "block";
 
-  // ▼ 2秒後にポップアップを閉じる
+  // ▼ 5秒後にポップアップを閉じる
   setTimeout(() => {
     document.getElementById("popupOverlay").style.display = "none";
-  }, 2000);
+  }, 5000);
 }
 
 </script>
