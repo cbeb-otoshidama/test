@@ -30,7 +30,7 @@
     input {
       width: 200px;
       padding: 8px;
-      margin: 8px;
+      margin: 10px;
       border-radius: 10px;
       border: 2px solid #d00000;
       font-size: 14px;
@@ -203,6 +203,13 @@
     const resultText = document.getElementById("resultText");
     resultText.style.display = "none";
 
+    // ▼ くじが全部なくなっていた場合
+    if (data.status === "empty") {
+    resultText.innerHTML = "<span class='result-main'>くじがありません</span>";
+    resultText.style.display = "block";
+    return;
+    }
+    
     box.classList.add("shake");
 
     await new Promise(resolve => {
