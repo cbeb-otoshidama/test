@@ -54,6 +54,14 @@
       transform: scale(1.05);
     }
 
+    button.disabled {
+      background: #ccc !important; /* グレー */
+      color: #666 !important;      /* 文字色を薄めに */
+      cursor: default;             /* カーソルを変える */
+      pointer-events: none;        /* hoverやクリック無効化 */
+      transform: none !important;   /* scaleなど無効化 */
+    }
+
     #resultText {
       font-size: 32px;
       color: #d00000;
@@ -229,6 +237,7 @@
   // ボタンを無効化して連打防止
   btn.disabled = true;
   btn.innerText = "登録中...";
+  btn.classList.add("disabled");
     
   await fetch(API_URL, {
     method: "POST",
@@ -245,15 +254,17 @@
   // ▼ 完了メッセージを表示
   document.getElementById("popupComplete").style.display = "block";
 
-  // ▼ 5秒後にポップアップを閉じる
+  // ▼ 3秒後にポップアップを閉じる
   setTimeout(() => {
     document.getElementById("popupOverlay").style.display = "none";
-  // ボタンをリセット（次回の当たり用）
+    
+  // ボタンをリセット
     btn.disabled = false;
     btn.innerText = "登録";
+    btn.classList.remove("disabled");
     document.getElementById("popupForm").style.display = "block";
     document.getElementById("popupComplete").style.display = "none";
-  }, 5000); // 5秒に短縮
+  }, 3000); // 3秒に短縮
 }
 
 </script>
