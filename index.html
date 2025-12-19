@@ -171,6 +171,7 @@
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbye8i5Q0ifgn6WsTqOqB2rM1S5vgzBTjz0yIcCbmgtzHvmsTC2jCM72iU8NpwS43q921A/exec";
   let userName = "";
+  let lotteryId = "";
 
   async function draw() {
     const name = document.getElementById("name").value;
@@ -203,6 +204,7 @@
     });
 
     const data = await res.json();
+    lotteryId = data.lotteryId; 
 
     resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
     resultText.style.display = "block";
@@ -224,7 +226,7 @@
     method: "POST",
     body: JSON.stringify({
       mode: "saveEmail",
-      name: userName,
+      lotteryId: lotteryId,
       email: email
     })
   });
