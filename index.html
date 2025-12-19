@@ -30,7 +30,7 @@
     input {
       width: 200px;
       padding: 8px;
-      margin: 10px;
+      margin: 25px;
       border-radius: 10px;
       border: 2px solid #d00000;
       font-size: 14px;
@@ -196,6 +196,7 @@
     }
 
     userName = name;
+
     document.getElementById("drawButton").style.display = "none";
     document.getElementById("name").style.display = "none";
 
@@ -204,29 +205,21 @@
     resultText.style.display = "none";
 
     /* ==========================
-       ① GASへリクエスト
+       ① 先にくじ箱を揺らす
     ========================== */
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ mode: "draw", name })
-    });
-
-    const data = await res.json();
-    
-    // ▼ くじが全部なくなっていた場合
-    if (data.status === "empty") {
-    resultText.innerHTML = "<span class='result-main'>くじがありません</span>";
-    resultText.style.display = "block";
-    return;
-    }
-    
-    /* ==========================
-       ③ 通常のくじ処理
-    ========================== */
-    lotteryId = data.lotteryId;
-
     box.classList.add("shake");
 
+    /* ==========================
+       ② 揺れている間にGAS通信
+    ========================== */
+    const fetchPromise = fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ mode: "draw", name })
+    }).then(res => res.json());
+
+    /* ==========================
+       ③ 揺れ終わるのを待つ
+    ========================== */
     await new Promise(resolve => {
       box.addEventListener("animationend", function handler() {
         box.classList.remove("shake");
@@ -235,59 +228,34 @@
       });
     });
 
+    /* ==========================
+       ④ 通信結果を受け取る
+    ========================== */
+    const data = await fetchPromise;
+
+    /* ==========================
+       ⑤ くじが空の場合
+    ========================== */
+    if (data.status === "empty") {
+      resultText.innerHTML = "くじがありません";
+      resultText.style.display = "block";
+      return;
+    }
+
+    /* ==========================
+       ⑥ 通常表示
+    ========================== */
+    lotteryId = data.lotteryId;
+
     resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
     resultText.style.display = "block";
 
-    // ▼ ポップアップ表示（当たりの場合）を 2.5 秒遅らせる
     if (data.result === "あたり") {
       setTimeout(() => {
         document.getElementById("popupOverlay").style.display = "flex";
-      }, 2500); // 2500ms = 2.5秒
+      }, 2500);
+    }
   }
-  }
-
-  async function sendEmail() {
-  const email = document.getElementById("email").value;
-  const btn = document.querySelector("#popupForm button");
-  
-  if (!email) {
-    alert("メールアドレスを入力してください");
-    return;
-  }
-
-  // ボタンを無効化して連打防止
-  btn.disabled = true;
-  btn.innerText = "登録中...";
-  btn.classList.add("disabled");
-    
-  await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      mode: "saveEmail",
-      lotteryId: lotteryId,
-      email: email
-    })
-  });
-
-  // ▼ 入力画面を隠す
-  document.getElementById("popupForm").style.display = "none";
-
-  // ▼ 完了メッセージを表示
-  document.getElementById("popupComplete").style.display = "block";
-
-  // ▼ 2.5秒後にポップアップを閉じる
-  setTimeout(() => {
-    document.getElementById("popupOverlay").style.display = "none";
-    
-  // ボタンをリセット
-    btn.disabled = false;
-    btn.innerText = "登録";
-    btn.classList.remove("disabled");
-    document.getElementById("popupForm").style.display = "block";
-    document.getElementById("popupComplete").style.display = "none";
-  }, 2500); // 2.5秒に短縮
-}
-
 </script>
 
 <!-- ▼ 当たり用ポップアップ -->
