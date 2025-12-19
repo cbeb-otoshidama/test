@@ -24,7 +24,7 @@
       color: #d00000;
       font-size: 36px;
       margin-bottom: 10px;
-      text-shadow: 2px 2px #ffd700;
+      text-shadow: 1px 1px #ffd700;
     }
 
     input {
@@ -61,6 +61,7 @@
       margin-bottom: 20px;
       margin-top: 0;
       display: none;
+      text-shadow: 1px 1px #ffd700;
       animation: popOut 0.5s ease-out;
     }
 
@@ -208,10 +209,12 @@
     resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
     resultText.style.display = "block";
 
+    // ▼ ポップアップ表示（当たりの場合）を 5 秒遅らせる
     if (data.result === "あたり") {
-      document.getElementById("popupOverlay").style.display = "flex";
+      setTimeout(() => {
+        document.getElementById("popupOverlay").style.display = "flex";
+      }, 5000); // 5000ms = 5秒
   }
-
   }
 
   async function sendEmail() {
