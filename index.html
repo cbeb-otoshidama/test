@@ -126,6 +126,12 @@
 
 <h2>COMBRIDGE&EB<br>お年玉くじ</h2>
 
+<!-- 当たり専用：メール入力（最初は非表示） -->
+<div id="emailArea" style="display:none; margin-bottom:20px;">
+  <input id="email" type="email" placeholder="メールアドレスを入力してください"><br><br>
+  <button onclick="sendEmail()">登録</button>
+</div>
+
 <!-- 名前入力 -->
 <input id="name" type="text" placeholder="名前を入力してください"><br><br>
 
@@ -135,12 +141,6 @@
 
 <div id="box">
     <img src="box_icon.png" class="box-icon">
-</div>
-  
-<!-- 当たり専用：メール入力（最初は非表示） -->
-<div id="emailArea" style="display:none;">
-  <input id="email" type="email" placeholder="メールアドレスを入力してください"><br><br>
-  <button onclick="sendEmail()">登録</button>
 </div>
 
 <script>
