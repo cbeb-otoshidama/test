@@ -30,7 +30,7 @@
     input {
       width: 200px;
       padding: 8px;
-      margin: 6px;
+      margin: 8px;
       border-radius: 10px;
       border: 2px solid #d00000;
       font-size: 14px;
@@ -39,7 +39,7 @@
 
     button {
       background: linear-gradient(to bottom, #d00000, #ff6666);
-      color: #fffde7;
+      color: #ffffff;
       border: none;
       padding: 10px 20px;
       border-radius: 30px;
@@ -224,11 +224,11 @@
     resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
     resultText.style.display = "block";
 
-    // ▼ ポップアップ表示（当たりの場合）を 3 秒遅らせる
+    // ▼ ポップアップ表示（当たりの場合）を 2.5 秒遅らせる
     if (data.result === "あたり") {
       setTimeout(() => {
         document.getElementById("popupOverlay").style.display = "flex";
-      }, 3000); // 3000ms = 3秒
+      }, 2500); // 2500ms = 2.5秒
   }
   }
 
@@ -261,7 +261,7 @@
   // ▼ 完了メッセージを表示
   document.getElementById("popupComplete").style.display = "block";
 
-  // ▼ 3秒後にポップアップを閉じる
+  // ▼ 2.5秒後にポップアップを閉じる
   setTimeout(() => {
     document.getElementById("popupOverlay").style.display = "none";
     
@@ -271,7 +271,7 @@
     btn.classList.remove("disabled");
     document.getElementById("popupForm").style.display = "block";
     document.getElementById("popupComplete").style.display = "none";
-  }, 3000); // 3秒に短縮
+  }, 2500); // 2.5秒に短縮
 }
 
 </script>
@@ -287,7 +287,6 @@
       </h3>
 
       <p style="font-size:14px; margin-bottom:10px;">
-        賞品のお渡しにつきましては<br>
         後日担当者よりご連絡いたします<br>
         メールアドレスをご入力ください
       </p>
