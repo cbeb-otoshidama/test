@@ -209,21 +209,27 @@
     resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
     resultText.style.display = "block";
 
-    // ▼ ポップアップ表示（当たりの場合）を 5 秒遅らせる
+    // ▼ ポップアップ表示（当たりの場合）を 3 秒遅らせる
     if (data.result === "あたり") {
       setTimeout(() => {
         document.getElementById("popupOverlay").style.display = "flex";
-      }, 5000); // 5000ms = 5秒
+      }, 3000); // 3000ms = 3秒
   }
   }
 
   async function sendEmail() {
   const email = document.getElementById("email").value;
+  const btn = document.querySelector("#popupForm button");
+  
   if (!email) {
     alert("メールアドレスを入力してください");
     return;
   }
 
+  // ボタンを無効化して連打防止
+  btn.disabled = true;
+  btn.innerText = "登録中...";
+    
   await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -242,7 +248,12 @@
   // ▼ 5秒後にポップアップを閉じる
   setTimeout(() => {
     document.getElementById("popupOverlay").style.display = "none";
-  }, 5000);
+  // ボタンをリセット（次回の当たり用）
+    btn.disabled = false;
+    btn.innerText = "登録";
+    document.getElementById("popupForm").style.display = "block";
+    document.getElementById("popupComplete").style.display = "none";
+  }, 5000); // 5秒に短縮
 }
 
 </script>
