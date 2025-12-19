@@ -38,7 +38,12 @@
     outline: none;
   }
 
-    button {
+  input:focus {
+    border-color: #d00000;
+    background: #fff8e7;
+  }
+    
+  button {
     background: linear-gradient(to bottom, #d00000, #ff6666);
     color: #fffde7;
     border: none;
@@ -139,7 +144,7 @@
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwDrwRaCGQAv9xXiHTfd60D0KyNZSdiSfayo8EIosj9GW3Kbid_REVePMpEH35eV2TNEQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbye8i5Q0ifgn6WsTqOqB2rM1S5vgzBTjz0yIcCbmgtzHvmsTC2jCM72iU8NpwS43q921A/exec";
 let userName = "";
 
 async function draw() {
@@ -155,6 +160,22 @@ async function draw() {
   document.getElementById("drawButton").style.display = "none";
   document.getElementById("name").style.display = "none";
 
+  const box = document.getElementById("box");
+  const resultText = document.getElementById("resultText");
+  resultText.style.display = "none";
+
+  /* ▼ ① 先に箱を揺らす */
+  box.classList.add("shake");
+
+  await new Promise(resolve => {
+    box.addEventListener("animationend", function handler() {
+      box.classList.remove("shake");
+      box.removeEventListener("animationend", handler);
+      resolve();
+    });
+  });
+
+  /* ▼ ② 揺れ終わってからAPI */
   const res = await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -165,65 +186,22 @@ async function draw() {
 
   const data = await res.json();
 
-  const resultText = document.getElementById("resultText");
-  resultText.style.display = "none";
-
-  // ▼ 先に API を呼ぶ（待たずにくじ箱を揺らす）
-  const apiPromise = fetch(API_URL, {
-  method: "POST",
-  body: JSON.stringify({ name, email })
-  }).then(res => res.json());
-
-  // ▼ 箱を揺らす
-  const box = document.getElementById("box");
-  box.classList.add("shake");
-
-  // 揺れ終了待ち
-  await new Promise(resolve => {
-  box.addEventListener("animationend", function handler() {
-    box.classList.remove("shake");
-    box.removeEventListener("animationend", handler);
-    resolve();
-  });
-  });
-
-  // ▼ 揺れが終わってから API 結果を受け取る
-  const data = await apiPromise;
-
-  // ▼ 参加済みチェック
-  if (data.status === "already") {
-  resultText.innerHTML = "<span class='result-main'>すでに参加済みです</span>";
-  resultText.style.display = "block";
-  return;
-  }
-
-  // ▼ くじが全部なくなっていた場合
-  if (data.status === "empty") {
-  resultText.innerHTML = "<span class='result-main'>くじがありません</span>";
-  resultText.style.display = "block";
-  return;
-  }
-
-  // ▼ 通常の当選結果
+  /* ▼ ③ 結果表示 */
   resultText.innerHTML =
-  "<span class='result-main'>＼ " + data.result + " ／</span>" +
-  "<br>" +
-  "<span class='result-prize'>" + data.prize + "</span>";
+    "＼ " + data.result + " ／<br>" +
+    data.prize;
 
   resultText.style.display = "block";
-  resultText.classList.add("animate"); // アニメーションのクラスを追加
 
-  }
-  
-  // ▼ 当たりのときだけメール入力を表示
+  /* ▼ ④ 当たりのときだけメール入力 */
   if (data.result === "あたり") {
     document.getElementById("emailArea").style.display = "block";
   }
-  }
+}
 
-  async function sendEmail() {
-    const email = document.getElementById("email").value;
-  　if (!email) {
+async function sendEmail() {
+  const email = document.getElementById("email").value;
+  if (!email) {
     alert("メールアドレスを入力してください");
     return;
   }
@@ -237,7 +215,7 @@ async function draw() {
     })
   });
 
-  alert("当選おめでとうございます！賞品のお渡しについては、後日担当者よりご連絡いたします。");
+  alert("当選おめでとうございます！\n後日、担当者よりご連絡いたします。");
   document.getElementById("emailArea").style.display = "none";
 }
 </script>
