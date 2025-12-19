@@ -30,7 +30,7 @@
     input {
       width: 200px;
       padding: 8px;
-      margin: 25px;
+      margin: 15px;
       border-radius: 10px;
       border: 2px solid #d00000;
       font-size: 14px;
@@ -255,7 +255,50 @@
         document.getElementById("popupOverlay").style.display = "flex";
       }, 2500);
     }
-  }
+    }
+    
+    async function sendEmail() {
+    const email = document.getElementById("email").value;
+    const btn = document.querySelector("#popupForm button");
+  
+    if (!email) {
+      alert("メールアドレスを入力してください");
+      return;
+    }
+
+    // ボタンを無効化して連打防止
+    btn.disabled = true;
+    btn.innerText = "登録中...";
+    btn.classList.add("disabled");
+    
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+      mode: "saveEmail",
+      lotteryId: lotteryId,
+      email: email
+      })
+    });
+
+    // ▼ 入力画面を隠す
+    document.getElementById("popupForm").style.display = "none";
+
+    // ▼ 完了メッセージを表示
+    document.getElementById("popupComplete").style.display = "block";
+
+    // ▼ 2.5秒後にポップアップを閉じる
+    setTimeout(() => {
+    document.getElementById("popupOverlay").style.display = "none";
+    
+    // ボタンをリセット
+      btn.disabled = false;
+      btn.innerText = "登録";
+      btn.classList.remove("disabled");
+      document.getElementById("popupForm").style.display = "block";
+      document.getElementById("popupComplete").style.display = "none";
+      }, 2500); // 2.5秒に短縮
+    }
+  
 </script>
 
 <!-- ▼ 当たり用ポップアップ -->
