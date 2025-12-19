@@ -24,7 +24,7 @@
       color: #d00000;
       font-size: 36px;
       margin-bottom: 10px;
-      text-shadow: 1px 1px #ffd700;
+      text-shadow: 2px 2px #ffd700;
     }
 
     input {
@@ -55,12 +55,19 @@
     }
 
     button.disabled {
-      background: #ccc !important; /* グレー */
-      color: #666 !important;      /* 文字色を薄めに */
-      cursor: default;             /* カーソルを変える */
-      pointer-events: none;        /* hoverやクリック無効化 */
-      transform: none !important;   /* scaleなど無効化 */
+      background: linear-gradient(to bottom, #d3d3d3, #a9a9a9); /* グレーグラデ */
+      color: #666666;      /* 文字色を薄く */
+      cursor: default;      /* カーソル変更 */
+      pointer-events: none; /* hoverやクリック無効化 */
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* 少し押し込まれた立体感 */
+      transform: none !important; /* scaleなど無効化 */
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
     }
+
+    button.disabled:hover {
+      transform: none;
+      background: linear-gradient(to bottom, #d3d3d3, #a9a9a9);
+   }
 
     #resultText {
       font-size: 32px;
@@ -184,7 +191,7 @@
   async function draw() {
     const name = document.getElementById("name").value;
     if (!name) {
-      alert("名前を入力してください");
+      alert("お名前を入力してください");
       return;
     }
 
