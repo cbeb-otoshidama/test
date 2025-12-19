@@ -203,6 +203,16 @@
     const resultText = document.getElementById("resultText");
     resultText.style.display = "none";
 
+    /* ==========================
+       ① GASへリクエスト
+    ========================== */
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ mode: "draw", name })
+    });
+
+    const data = await res.json();
+    
     // ▼ くじが全部なくなっていた場合
     if (data.status === "empty") {
     resultText.innerHTML = "<span class='result-main'>くじがありません</span>";
@@ -210,6 +220,11 @@
     return;
     }
     
+    /* ==========================
+       ③ 通常のくじ処理
+    ========================== */
+    lotteryId = data.lotteryId;
+
     box.classList.add("shake");
 
     await new Promise(resolve => {
@@ -219,14 +234,6 @@
         resolve();
       });
     });
-
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ mode: "draw", name })
-    });
-
-    const data = await res.json();
-    lotteryId = data.lotteryId; 
 
     resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
     resultText.style.display = "block";
