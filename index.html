@@ -5,201 +5,215 @@
   <title>COMBRIDGE&EB お年玉くじ</title>
 
   <style>
-  /* htmlとbodyを画面全体に */
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  body {
-    text-align: center;
-    font-family: "Hiragino Maru Gothic Pro", "Comic Sans MS", sans-serif;
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #fff5f5, #ffe6cc);
-    padding: 30px;
-  }
+    body {
+      text-align: center;
+      font-family: "Hiragino Maru Gothic Pro", "Comic Sans MS", sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #fff5f5, #ffe6cc);
+      padding: 30px;
+    }
 
-  h2 {
-  　color: #d00000;
-  　font-size: 36px;
-  　margin-bottom: 10px;
-  　text-shadow: 2px 2px #ffd700;
-  }
+    h2 {
+      color: #d00000;
+      font-size: 36px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px #ffd700;
+    }
 
-  input {
-    width: 200px;
-    padding: 8px;
-    margin: 6px;
-    border-radius: 10px;
-    border: 2px solid #d00000;
-    font-size: 14px;
-    outline: none;
-  }
+    input {
+      width: 200px;
+      padding: 8px;
+      margin: 6px;
+      border-radius: 10px;
+      border: 2px solid #d00000;
+      font-size: 14px;
+      outline: none;
+    }
 
-  input:focus {
-    border-color: #d00000;
-    background: #fff8e7;
+    button {
+      background: linear-gradient(to bottom, #d00000, #ff6666);
+      color: #fffde7;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px #dcdcdc;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: linear-gradient(to bottom, #ff6666, #d00000);
+      transform: scale(1.05);
+    }
+
+    #resultText {
+      font-size: 32px;
+      color: #d00000;
+      font-weight: bold;
+      margin-bottom: 20px;
+      margin-top: 0;
+      display: none;
+      text-shadow: 1px 1px #ffd700;
+      animation: popOut 0.5s ease-out;
+    }
+
+    @keyframes popOut {
+      0% {
+        opacity: 0;
+        transform: scale(0.6);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    #box {
+      width: 300px;
+      height: 300px;
+      margin: 40px auto 0 auto;
+      position: relative;
+    }
+
+    .box-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 15px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .shake {
+      animation: shake 2s ease-in-out;
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      10% { transform: rotate(10deg); }
+      20% { transform: rotate(-10deg); }
+      30% { transform: rotate(10deg); }
+      40% { transform: rotate(-10deg); }
+      50% { transform: rotate(5deg); }
+      60% { transform: rotate(-5deg); }
+      70% { transform: rotate(5deg); }
+      80% { transform: rotate(-5deg); }
+      90% { transform: rotate(2deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* ===== 当たり用ポップアップ ===== */
+    #popupOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #popupContent {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: popupZoom 0.4s ease-out;
+    }
+
+    @keyframes popupZoom {
+      0% {
+        opacity: 0;
+        transform: scale(0.7);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
   }
     
-  button {
-    background: linear-gradient(to bottom, #d00000, #ff6666);
-    color: #fffde7;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px #dcdcdc;
-    transition: 0.2s;
-  }
-
-  button:hover {
-    background: linear-gradient(to bottom, #ff6666, #d00000);
-    transform: scale(1.05);
-  }
-  
-  #resultText {
-  　font-size: 32px;
-  　color: #d00000;
-  　font-weight: bold;
-  　margin-bottom: 20px;
-  　margin-top: 0;
-  　display: none;
-  　text-shadow: 1px 1px #ffd700;
-  　animation: popOut 0.5s ease-out;  /* アニメーションを追加 */
-　}
-
-　@keyframes popOut {
-  0% {
-    opacity: 0;
-    transform: scale(0.6);  /* 初めは小さく表示 */
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);  /* 少し拡大して、弾けるような効果 */
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);  /* 最終的に元のサイズに戻る */
-  }
-  }
-
-  #box {
-    width: 300px;
-    height: 300px;
-    margin: 40px auto 0 auto;
-    position: relative;
-  }
-
-  .box-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 15px;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .shake {
-    animation: shake 2s ease-in-out;
-  }
-
-  @keyframes shake {
-    0% { transform: rotate(0deg); }
-    10% { transform: rotate(10deg); }
-    20% { transform: rotate(-10deg); }
-    30% { transform: rotate(10deg); }
-    40% { transform: rotate(-10deg); }
-    50% { transform: rotate(5deg); }
-    60% { transform: rotate(-5deg); }
-    70% { transform: rotate(5deg); }
-    80% { transform: rotate(-5deg); }
-    90% { transform: rotate(2deg); }
-    100% { transform: rotate(0deg); }
-  }
   </style>
 </head>
+
 <body>
 
 <h2>COMBRIDGE&EB<br>お年玉くじ</h2>
 
-<!-- 当たり専用：メール入力（最初は非表示） -->
-<div id="emailArea" style="display:none; margin-bottom:20px;">
-  <input id="email" type="email" placeholder="メールアドレスを入力してください"><br><br>
-  <button onclick="sendEmail()">登録</button>
-</div>
-
-<!-- 名前入力 -->
-<input id="name" type="text" placeholder="名前を入力してください"><br><br>
+<input id="name" type="text" placeholder="お名前を入力してください"><br><br>
 
 <button id="drawButton" onclick="draw()">くじを引く</button>
 
 <p id="resultText"></p>
 
 <div id="box">
-    <img src="box_icon.png" class="box-icon">
+  <img src="box_icon.png" class="box-icon">
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbye8i5Q0ifgn6WsTqOqB2rM1S5vgzBTjz0yIcCbmgtzHvmsTC2jCM72iU8NpwS43q921A/exec";
-let userName = "";
+  const API_URL = "https://script.google.com/macros/s/AKfycbye8i5Q0ifgn6WsTqOqB2rM1S5vgzBTjz0yIcCbmgtzHvmsTC2jCM72iU8NpwS43q921A/exec";
+  let userName = "";
 
-async function draw() {
-  const name = document.getElementById("name").value;
-  if (!name) {
-    alert("名前を入力してください");
-    return;
-  }
+  async function draw() {
+    const name = document.getElementById("name").value;
+    if (!name) {
+      alert("名前を入力してください");
+      return;
+    }
 
-  userName = name;
+    userName = name;
+    document.getElementById("drawButton").style.display = "none";
+    document.getElementById("name").style.display = "none";
 
-  // 名前・ボタンを非表示
-  document.getElementById("drawButton").style.display = "none";
-  document.getElementById("name").style.display = "none";
+    const box = document.getElementById("box");
+    const resultText = document.getElementById("resultText");
+    resultText.style.display = "none";
 
-  const box = document.getElementById("box");
-  const resultText = document.getElementById("resultText");
-  resultText.style.display = "none";
+    box.classList.add("shake");
 
-  /* ▼ ① 先に箱を揺らす */
-  box.classList.add("shake");
-
-  await new Promise(resolve => {
-    box.addEventListener("animationend", function handler() {
-      box.classList.remove("shake");
-      box.removeEventListener("animationend", handler);
-      resolve();
+    await new Promise(resolve => {
+      box.addEventListener("animationend", function handler() {
+        box.classList.remove("shake");
+        box.removeEventListener("animationend", handler);
+        resolve();
+      });
     });
-  });
 
-  /* ▼ ② 揺れ終わってからAPI */
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      mode: "draw",
-      name: name
-    })
-  });
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ mode: "draw", name })
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  /* ▼ ③ 結果表示 */
-  resultText.innerHTML =
-    "＼ " + data.result + " ／<br>" +
-    data.prize;
+    resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
+    resultText.style.display = "block";
 
-  resultText.style.display = "block";
-
-  /* ▼ ④ 当たりのときだけメール入力 */
-  if (data.result === "あたり") {
-    document.getElementById("emailArea").style.display = "block";
+    if (data.result === "あたり") {
+      document.getElementById("popupOverlay").style.display = "flex";
   }
-}
 
-async function sendEmail() {
+  }
+
+  async function sendEmail() {
   const email = document.getElementById("email").value;
   if (!email) {
     alert("メールアドレスを入力してください");
@@ -215,10 +229,52 @@ async function sendEmail() {
     })
   });
 
-  alert("当選おめでとうございます！\n後日、担当者よりご連絡いたします。");
-  document.getElementById("emailArea").style.display = "none";
+  // ▼ 入力画面を隠す
+  document.getElementById("popupForm").style.display = "none";
+
+  // ▼ 完了メッセージを表示
+  document.getElementById("popupComplete").style.display = "block";
+
+  // ▼ 2秒後にポップアップを閉じる
+  setTimeout(() => {
+    document.getElementById("popupOverlay").style.display = "none";
+  }, 2000);
 }
+
 </script>
+
+<!-- ▼ 当たり用ポップアップ -->
+<div id="popupOverlay">
+  <div id="popupContent">
+
+    <!-- 入力画面 -->
+    <div id="popupForm">
+      <h3 style="color:#d00000; margin-top:0;">
+        🎉 当選おめでとうございます！
+      </h3>
+
+      <p style="font-size:14px; margin-bottom:10px;">
+        賞品のお渡しのため<br>
+        メールアドレスをご入力ください
+      </p>
+
+    <input id="email" type="email" placeholder="メールアドレス"><br><br>
+
+    <button onclick="sendEmail()">登録</button>
+    </div>
+
+    <!-- 完了メッセージ（最初は非表示） -->
+    <div id="popupComplete" style="display:none;">
+      <h3 style="color:#d00000; margin-top:0;">
+        ✔ 登録完了
+      </h3>
+
+      <p style="font-size:15px;">
+        メールアドレスの登録が完了しました。
+      </p>
+    </div>
+
+  </div>
 
 </body>
 </html>
