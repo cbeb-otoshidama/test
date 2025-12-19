@@ -173,7 +173,7 @@
 
 <h2>COMBRIDGE&EB<br>お年玉くじ</h2>
 
-<input id="name" type="text" placeholder="お名前を入力してください"><br><br>
+<input id="name" type="text" placeholder="お名前を入力してください"><br>
 
 <button id="drawButton" onclick="draw()">くじを引く</button>
 
@@ -234,11 +234,13 @@
     const data = await fetchPromise;
 
     /* ==========================
-       ⑤ くじが空の場合
+       ⑤ くじが空の場合（少し間をあける）
     ========================== */
     if (data.status === "empty") {
-      resultText.innerHTML = "くじがありません";
-      resultText.style.display = "block";
+      setTimeout(() => {
+        resultText.innerHTML = "くじがありません";
+        resultText.style.display = "block";
+      }, 400); // ← 0.4秒の間
       return;
     }
 
@@ -316,7 +318,7 @@
         メールアドレスをご入力ください
       </p>
 
-    <input id="email" type="email" placeholder="メールアドレス"><br><br>
+    <input id="email" type="email" placeholder="メールアドレス"><br>
 
     <button onclick="sendEmail()">登録</button>
     </div>
