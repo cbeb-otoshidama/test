@@ -249,8 +249,15 @@
     ========================== */
     lotteryId = data.lotteryId;
 
-    resultText.innerHTML = "＼ " + data.result + " ／<br>" + data.prize;
-    resultText.style.display = "block";
+    let message = "＼ " + data.result + " ／<br>" + data.prize;
+
+　　　// 「はずれ」のときだけメッセージ追加
+　　　if (data.result === "はずれ") {
+  　　　message += "<br><span style='font-size:18px;'>本年もどうぞよろしくお願いします</span>";
+　　　}
+
+　　　resultText.innerHTML = message;
+　　　resultText.style.display = "block";
 
     if (data.result === "あたり") {
       setTimeout(() => {
