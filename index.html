@@ -251,10 +251,12 @@
 
       @media (max-width: 480px) {
         .br-sp {
-          display: block; /* スマホでは改行として表示 */
-          content: "";    /* 空の内容で改行 */
+          display: block;      /* スマホで改行 */
+          content: "";         /* 空の内容 */
+          line-height: 0;      /* 改行間隔を詰める */
+          margin: 0;           /* 余白も消す */
         }
-     }
+      }
 
   </style>
 </head>
