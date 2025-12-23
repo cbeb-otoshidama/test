@@ -99,16 +99,16 @@
       font-size: 18px;
       margin-top: 8px;
     }
-
+    
     .mail-link {
- 　　　 color: #d00000;
-  　　　text-decoration: underline;
-  　　　font-weight: bold;
-　　　}
-
-　　　.mail-link:hover {
-  　　　opacity: 0.7;
-　　　}
+      color: #d00000;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+    
+    .mail-link:hover {
+      opacity: 0.7;
+    }
     
     #box {
       width: 300px;
@@ -273,8 +273,7 @@
 
     // 「あたり」のときだけメッセージ追加
 　　　if (data.result === "あたり") {
- 　　　 message += "<br><span style='font-size:18px;'>メールアドレスの入力画面が表示されない場合は
-       <a href='#popupForm' class='mail-link'>info</a>へご連絡ください</span>";
+ 　　　 message += "<br><span style='font-size:18px;'>メールアドレスの入力画面が表示されない場合は<a href='#popupForm' class='mail-link'>info</a>へご連絡ください</span>";
 　　　}
 
 　　　resultText.innerHTML = message;
